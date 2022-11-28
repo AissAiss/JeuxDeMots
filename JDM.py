@@ -236,3 +236,67 @@ class Terme:
 
     def isValidTerme(terme): 
         return " " not in terme and "<" not in terme and">" not in terme and":" not in terme and "\x9c" not in terme and "ï" not in terme and "_" not in terme
+
+class Trie(object):
+    def __init__(self,wd="",end=False):
+        self.br={}; self.end=end
+        if wd!="": self.addword(wd)
+    def __repr__(self): # Uniquement pour les tests
+        br=self.br.__repr__()
+        m='E,' if self.end else ""
+        return "T["+m+br+"]"
+
+    def addword(self,wd):
+        br=self.br
+        if wd:
+            c=wd[0]; rst=wd[1:] # Découpage essentiel
+            if c not in br: 
+                br[c]=Trie() # Nouvelle branche
+            br[c].addword(rst)
+        else: 
+            self.end=True # Marqueur de la fin       
+
+    def searchword(self,wd):
+        if self.search(wd): 
+            print(str(wd) + " is in Trie")
+            self.sufix(wd)
+        else:
+            print(str(wd) + " is not in Trie")
+
+    def sufix(self, wd):
+        br = self.br
+        for c in wd:
+            br = br[c]
+
+        print(br.words())
+
+    def search(self,wd):
+        br=self.br
+        if wd:
+            c=wd[0]; rst=wd[1:] # Découpage essentiel
+            if c in br : 
+                if len(rst) == 0: 
+                    return True
+                else : 
+                    return br[c].search(rst)
+            else : 
+                return False
+            
+
+    def __getitem__(self,c):  # Objet émule une liste/dict.
+        return self.br[c]
+
+    # Renvoie tout les mots du dictionnaire
+    def words(self):
+        br=self.br
+        l=[]
+        for c in br:
+            w=br[c].words() # Les suffixes du mot en question
+            if w==[]: 
+                x=[c] # Si vide
+            else:
+                x=[c + " " + h for h in w] # Non vide. c à la tête
+                if br[c].end: 
+                    x+= (" " + str(c)) #[c] # Cas spécial ! 
+            l+=x
+        return l
