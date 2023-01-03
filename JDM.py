@@ -263,6 +263,13 @@ class Trie(object):
         else:
             print(str(wd) + " is not in Trie")
 
+    def isCT(self,wd):
+        if self.search(wd): 
+            return True
+        else:
+            return False
+
+
     def sufix(self, wd):
         br = self.br
         for c in wd:
